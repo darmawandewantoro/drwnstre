@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Awan Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #343a40, #212529);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card login-card shadow">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Login Awan Store</h3>
+
+      <div id="alert"></div>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Dharmawan@gmail.com">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="12345">
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+    const akunEmail = "Dharmawan@gmail.com";
+    const akunPassword = "12345";
+
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const alertBox = document.getElementById("alert");
+
+      // Validasi kosong
+      if (email === "" || password === "") {
+        alertBox.innerHTML = `
+        <div class="alert alert-danger">
+          Email dan Password wajib diisi!
+        </div>
+      `;
+        return;
+      }
+
+      // Validasi login
+      if (email === akunEmail && password === akunPassword) {
+        alertBox.innerHTML = `
+        <div class="alert alert-success">
+          Login berhasil! Selamat datang 👋
+        </div>
+      `;
+
+        // Simpan status login
+        localStorage.setItem("login", "true");
+
+        // Redirect (opsional)
+        setTimeout(() => {
+          window.location.href = "beranda.html";
+        }, 1500);
+
+      } else {
+        alertBox.innerHTML = `
+        <div class="alert alert-danger">
+          Email atau Password salah!
+        </div>
+      `;
+      }
+    });
+  </script>
+
+</body>
+
+</html>

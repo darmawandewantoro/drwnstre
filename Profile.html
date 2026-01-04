@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile | Awan Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card {
+      max-width: 600px;
+      margin: auto;
+    }
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #dee2e6;
+    }
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .edit-input {
+      width: 70%;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+  <div class="card shadow">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Profile Saya</h3>
+
+      <div class="text-center mb-3">
+        <img src="WhatsApp Image 2026-01-04 at 14.41.24.jpeg" class="profile-img" alt="Profile">
+      </div>
+
+      <div id="alert"></div>
+
+      <!-- Tampilkan profile -->
+      <div id="profileView">
+        <div class="profile-item"><strong>Nama:</strong> <span id="viewNama"></span></div>
+        <div class="profile-item"><strong>Email:</strong> <span id="viewEmail"></span></div>
+        <div class="profile-item"><strong>No HP:</strong> <span id="viewHp"></span></div>
+        <div class="profile-item"><strong>Alamat:</strong> <span id="viewAlamat"></span></div>
+        <button class="btn btn-primary w-100 mt-3" onclick="editProfile()">Edit Profile</button>
+      </div>
+
+      <!-- Edit profile (hidden default) -->
+      <div id="profileEdit" style="display:none;">
+        <div class="mb-3">
+          <input type="text" id="editNama" class="form-control edit-input" placeholder="Nama Lengkap">
+        </div>
+        <div class="mb-3">
+          <input type="email" id="editEmail" class="form-control edit-input" placeholder="Email">
+        </div>
+        <div class="mb-3">
+          <input type="text" id="editHp" class="form-control edit-input" placeholder="No HP">
+        </div>
+        <div class="mb-3">
+          <textarea id="editAlamat" class="form-control edit-input" rows="3" placeholder="Alamat"></textarea>
+        </div>
+        <button class="btn btn-success w-100" onclick="saveProfile()">Simpan</button>
+        <button class="btn btn-secondary w-100 mt-2" onclick="cancelEdit()">Batal</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const alertBox = document.getElementById("alert");
+
+  // Load data profile dari localStorage
+  function loadProfile() {
+    const profile = JSON.parse(localStorage.getItem("profile")) || {
+      nama: "Belum diisi",
+      email: "Belum diisi",
+      hp: "Belum diisi",
+      alamat: "Belum diisi"
+    };
+
+    document.getElementById("viewNama").textContent = profile.nama;
+    document.getElementById("viewEmail").textContent = profile.email;
+    document.getElementById("viewHp").textContent = profile.hp;
+    document.getElementById("viewAlamat").textContent = profile.alamat;
+  }
+
+  loadProfile();
+
+  // Edit profile
+  function editProfile() {
+    const profile = JSON.parse(localStorage.getItem("profile")) || {};
+    document.getElementById("editNama").value = profile.nama || "";
+    document.getElementById("editEmail").value = profile.email || "";
+    document.getElementById("editHp").value = profile.hp || "";
+    document.getElementById("editAlamat").value = profile.alamat || "";
+
+    document.getElementById("profileView").style.display = "none";
+    document.getElementById("profileEdit").style.display = "block";
+  }
+
+  // Cancel edit
+  function cancelEdit() {
+    document.getElementById("profileEdit").style.display = "none";
+    document.getElementById("profileView").style.display = "block";
+    alertBox.innerHTML = "";
+  }
+
+  // Simpan profile
+  function saveProfile() {
+    const nama = document.getElementById("editNama").value.trim();
+    const email = document.getElementById("editEmail").value.trim();
+    const hp = document.getElementById("editHp").value.trim();
+    const alamat = document.getElementById("editAlamat").value.trim();
+
+    // Validasi
+    if (!nama || !email || !hp || !alamat) {
+      tampilAlert("Semua data wajib diisi!", "danger");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      tampilAlert("Format email tidak valid!", "danger");
+      return;
+    }
+
+    const hpRegex = /^[0-9]{10,13}$/;
+    if (!hpRegex.test(hp)) {
+      tampilAlert("Nomor HP harus berupa angka (10–13 digit)!", "danger");
+      return;
+    }
+
+    // Simpan ke localStorage
+    const profileData = { nama, email, hp, alamat };
+    localStorage.setItem("profile", JSON.stringify(profileData));
+    tampilAlert("Profile berhasil disimpan!", "success");
+
+    // Kembali ke tampilan profile
+    document.getElementById("profileEdit").style.display = "none";
+    document.getElementById("profileView").style.display = "block";
+    loadProfile();
+  }
+
+  function tampilAlert(pesan, type) {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${pesan}</div>`;
+  }
+</script>
+
+</body>
+</html>

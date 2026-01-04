@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Keranjang | Awan Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card {
+      max-width: 900px;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+  <!-- PRODUK -->
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Daftar Produk</h3>
+
+      <div class="row text-center">
+        <div class="col-md-4 mb-3">
+          <h5>Kaos Polos Biru</h5>
+          <p>Rp 29.000</p>
+          <button class="btn btn-warning" onclick="tambahKeranjang('Kaos Polos Biru', 29000)">
+            Tambah ke Keranjang
+          </button>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <h5>Kaos Polos Putih</h5>
+          <p>Rp 29.000</p>
+          <button class="btn btn-warning" onclick="tambahKeranjang('Kaos Polos Putih', 29000)">
+            Tambah ke Keranjang
+          </button>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <h5>Kaos Polos abu-abu</h5>
+          <p>Rp 29.000</p>
+          <button class="btn btn-warning" onclick="tambahKeranjang('Kaos Polos abu', 29000)">
+            Tambah ke Keranjang
+          </button>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <h5>Kaos Polos Hitam</h5>
+          <p>Rp 29.000</p>
+          <button class="btn btn-warning text-center" onclick="tambahKeranjang('Kaos Polos Hitam', 29000)">
+            Tambah ke Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KERANJANG -->
+  <div class="card shadow">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Keranjang Belanja</h3>
+
+      <div id="alert"></div>
+
+      <table class="table table-bordered text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>No</th>
+            <th>Produk</th>
+            <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelKeranjang">
+          <tr>
+            <td colspan="6">Keranjang masih kosong</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end">
+        <h5>Total: <span id="totalHarga">Rp 0</span></h5>
+        <button class="btn btn-success mt-2" onclick="checkout()">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+  const tabelKeranjang = document.getElementById("tabelKeranjang");
+  const totalHargaEl = document.getElementById("totalHarga");
+  const alertBox = document.getElementById("alert");
+
+  let keranjang = [];
+  let totalHarga = 0;
+
+  function tambahKeranjang(nama, harga) {
+    const item = keranjang.find(p => p.nama === nama);
+
+    if (item) {
+      item.jumlah++;
+    } else {
+      keranjang.push({ nama, harga, jumlah: 1 });
+    }
+
+    renderKeranjang();
+  }
+
+  function renderKeranjang() {
+    tabelKeranjang.innerHTML = "";
+    totalHarga = 0;
+
+    keranjang.forEach((item, index) => {
+      const subtotal = item.harga * item.jumlah;
+      totalHarga += subtotal;
+
+      tabelKeranjang.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.nama}</td>
+          <td>Rp ${item.harga.toLocaleString("id-ID")}</td>
+          <td>${item.jumlah}</td>
+          <td>Rp ${subtotal.toLocaleString("id-ID")}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="hapusItem(${index})">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    if (keranjang.length === 0) {
+      tabelKeranjang.innerHTML = `
+        <tr>
+          <td colspan="6">Keranjang masih kosong</td>
+        </tr>
+      `;
+    }
+
+    totalHargaEl.textContent = "Rp " + totalHarga.toLocaleString("id-ID");
+  }
+
+  function hapusItem(index) {
+    keranjang.splice(index, 1);
+    renderKeranjang();
+  }
+
+  function checkout() {
+    if (keranjang.length === 0) {
+      alertBox.innerHTML = `
+        <div class="alert alert-danger">
+          Keranjang masih kosong!
+        </div>
+      `;
+      return;
+    }
+
+    alertBox.innerHTML = `
+      <div class="alert alert-success">
+        Checkout berhasil! Terima kasih telah berbelanja 😊
+      </div>
+    `;
+
+    keranjang = [];
+    renderKeranjang();
+  }
+</script>
+
+</body>
+</html>
